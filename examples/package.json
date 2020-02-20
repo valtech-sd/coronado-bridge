@@ -1,0 +1,24 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "npm install && npm run install:package && npm run build",
+    "install:package": "cd .. && npm install",
+    "build": "npm run build:package && npm run build:examples",
+    "build:package": "cd .. && npx tsc",
+    "build:examples": "tsc",
+    "file": "node build/file.js",
+    "file-js": "node build/file-no-typescript.js",
+    "custom-file": "node build/custom-file.js",
+    "console": "node build/console.js",
+    "error": "node build/error.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.7.4",
+    "coronado-bridge": "file:.."
+  }
+}
