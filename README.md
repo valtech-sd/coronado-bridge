@@ -1,4 +1,4 @@
-# Coronado CoronadoBridge
+# Coronado Bridge
 
 <p align="center">
   <img width="460" height="300" src="https://render.fineartamerica.com/images/rendered/square-dynamic/small/images/artworkimages/mediumlarge/1/coronado-bridge-with-sailboats-robert-gerdes.jpg">
@@ -8,7 +8,7 @@
 
 ## Purpose
 
-HTTP CoronadoBridge is a simple general purpose router of all HTTP requests. It will wrap all RESTful calls from external systems and pass those JSON message into a outbound provider.
+Coronado Bridge is a simple general purpose router of all HTTP requests. It will wrap all RESTful calls from external systems and pass those JSON message into a outbound provider.
 
 ### Why?
 
