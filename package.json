@@ -7,6 +7,10 @@
   "files": [
     "dist/**/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valtech-sd/coronado-bridge.git"
+  },
   "scripts": {
     "build": "rm -rf dist && tsc",
     "test:unit": "mocha -r ts-node/register ./tests/unit/*.test.ts"
