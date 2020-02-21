@@ -27,14 +27,14 @@ The `handler` function is passed a req object. The req object has the request bo
 
 - POST
 - body: `{id: 1, name: Shane, page: 33}`
-- URL: `/article/55?page=5&loc=USA`
+- URL: `/article/55?page=54&loc=USA`
 
 Outbound Provider req Object:
 
 ```
 {
   body: {id: 1, name: Shane, page: 33},
-  query: {page:5, loc:'USA'},
+  query: {page:54, loc:'USA'},
   params: ['article', '55']
 }
 ```
