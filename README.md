@@ -92,7 +92,7 @@ The default export of the package is the CoronadoBridge object. When you initial
 
 The package has some configuration options.
 
-| Option           | type            | description                                                                  | required | default |
+| Option           | Type            | Description                                                                  | Required | Default |
 | ---------------- | --------------- | ---------------------------------------------------------------------------- | -------- | ------- |
 | outboundProvider | `Class`         | This class is passed all requests and should implement a `handler` function. | YES      | N/A     |
 | ports            | `Array<Number>` | The ports Express listens to for inbound messages.                           | NO       | 3000    |
