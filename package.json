@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "test:unit": "mocha -r ts-node/register ./tests/unit/*.test.ts"
+    "test": "mocha -r ts-node/register ./tests/unit/*.test.ts"
   },
   "author": "Shane Mckenna",
   "license": "MIT",
