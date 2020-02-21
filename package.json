@@ -1,5 +1,5 @@
 {
-  "name": "coronado-bridge",
+  "name": "@valtech-sd/coronado-bridge",
   "version": "1.0.1",
   "description": "Coronado Bridge is a simple general purpose router of all HTTP requests. It will wrap all RESTful calls from external systems and pass those JSON message into a outbound provider.",
   "main": "dist/index.js",
