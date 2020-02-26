@@ -1,9 +1,5 @@
 # Coronado Bridge
 
-<p align="center">
-  <img width="460" height="300" src="https://render.fineartamerica.com/images/rendered/square-dynamic/small/images/artworkimages/mediumlarge/1/coronado-bridge-with-sailboats-robert-gerdes.jpg">
-</p>
-
 [![CircleCI](https://circleci.com/gh/valtech-sd/coronado-bridge.svg?style=svg)](https://circleci.com/gh/valtech-sd/coronado-bridge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
