@@ -320,6 +320,7 @@ The root directory consist of the following:
 - tests - Mocha tests
 - `.prettierrc` - prettier configuration
 - `CONTRIBUTING.md` - short guide to how you can help with this project
+- `LICENSE.md` - package license information
 - `package.json` - package dependencies, scripts etc.
 - `README.md` - This file
 - `tsconfig.json` - Typescript settings
