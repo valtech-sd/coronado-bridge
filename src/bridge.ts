@@ -50,6 +50,14 @@ class CoronadoBridge {
     ports.forEach((port: number) => {
       let app = express();
       app.use(express.json());
+      app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header(
+          'Access-Control-Allow-Headers',
+          'Origin, X-Requested-With, Content-Type, Accept'
+        );
+        next();
+      });
       // 2. Sets up server route
       app.post('*', (req, res) => {
         if (this.logger) {
