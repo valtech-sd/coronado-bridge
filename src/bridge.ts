@@ -1,15 +1,9 @@
 import express from 'express';
 import { Logger } from 'log4js';
 import { IBridgeConfig } from './index';
-import { IOutboundProvider } from './provider';
+import { IOutboundProvider, IProviderReq } from './provider'; 
 
 import BridgeError from './bridge-error';
-
-interface IProviderReq {
-  body: object;
-  query: object;
-  params?: object;
-}
 
 class CoronadoBridge {
   private outboundProvider: IOutboundProvider;
@@ -75,11 +69,11 @@ class CoronadoBridge {
         }
         this.outboundProvider
           .handler(providerReq)
-          .then(() => {
+          .then(data => {
             if (this.logger) {
-              this.logger.info(`CoronadoBridge - handler processed message`);
+              this.logger.info(`CoronadoBridge - handler processed message`); 
             }
-            res.sendStatus(200);
+            res.status(200).send(data);
           })
           .catch(error => {
             if (error instanceof BridgeError) {

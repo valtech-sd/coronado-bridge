@@ -1,3 +1,9 @@
+export interface IProviderReq {
+  body: object;
+  query: object;
+  params?: Array<string>;
+}
+
 export interface IOutboundProvider {
-  handler(message: object): Promise<void>;
+  handler(message: IProviderReq): Promise<any>;
 }

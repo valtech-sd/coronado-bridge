@@ -1,7 +1,7 @@
 import CoronadoBridge from './bridge';
 import { Logger } from 'log4js';
 
-import { IOutboundProvider } from './provider';
+import { IOutboundProvider, IProviderReq } from './provider';
 
 import BridgeError from './bridge-error';
 
@@ -13,4 +13,4 @@ export interface IBridgeConfig {
 
 export default CoronadoBridge;
 
-export { IOutboundProvider, BridgeError };
+export { IOutboundProvider, BridgeError, IProviderReq };
