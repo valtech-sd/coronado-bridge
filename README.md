@@ -27,7 +27,7 @@ The `handler` function is passed a req object. The req object has the request bo
 
 Outbound Provider req Object:
 
-```
+```js
 {
   body: {id: 1, name: Shane, page: 33},
   query: {page:54, loc:'USA'},
@@ -37,7 +37,7 @@ Outbound Provider req Object:
 
 **Example Class:**
 
-```
+```js
 class OutboundConsole {
     handler(req) {
         // Returns a promise
@@ -74,7 +74,7 @@ $ npm install coronado-bridge
 
 ## Import
 
-```
+```js
 //ES6
 import CoronadoBridge from 'coronado-bridge'
 
@@ -96,7 +96,7 @@ The package has some configuration options.
 
 **Example**:
 
-```
+```js
 import CoronadoBridge from 'coronado-bridge'
 // Our outbound provider class which implements a
 // handler function that writes messages to a file.
@@ -124,7 +124,7 @@ new CoronadoBridge(config);
 
 This package is built with typescript. If you are implementing this into a typescript project you can use the `ICoronadoBridgeConfig` interface to help you define the configuration object.
 
-```
+```ts
 import CoronadoBridge, {ICoronadoBridgeConfig} from 'coronado-bridge'
 import OutboundFile from './providers/OutboundFile'
 import logger from './providers/CustomLogger'
@@ -152,7 +152,7 @@ This section is a walkthrough of some of the examples found in `./examples`
 
 If you are implementing this into a typescript project you can use the `IOutboundProvider` interface to help you define the outbound provider (and the `IProviderReq` interface to define the object passed in to the provider).
 
-```
+```ts
 // import IOutboundProvider interface to
 // help define the outbound provider class
 import {IOutboundProvider, IProviderReq} from 'coronado-bridge'
@@ -175,7 +175,7 @@ export default OutboundConsole
 
 You can also return `data` from an outbound provider's Promise:
 
-```
+```ts
 // import IOutboundProvider interface to
 // help define the outbound provider class
 import {IOutboundProvider, IProviderReq} from 'coronado-bridge'
@@ -199,7 +199,7 @@ class OutboundConsole implements IOutboundProvider {
 
 This package exports a CoronadoBridgeError class to handle errors in your outbound provider. The `constructor` requires two properties. A http status code and a error message.
 
-```
+```ts
 // Import the CoronadoBridgeError class
 import { IOutboundProvider, CoronadoBridgeError } from 'coronado-bridge';
 
@@ -232,7 +232,7 @@ The outbound custom file example is an extension of the OutboundFile outbound pr
 
 **Example Request**: `POST /?id=2&type=camera`
 
-```
+```ts
 // Define expected message
 interface IHandlerReq {
   query: {
@@ -298,7 +298,7 @@ To run some of the examples located in `./examples`, simple run the scripts outl
 
 Can be used with all examples
 
-```
+```bash
 curl --location --request POST 'http://localhost:3000/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -315,7 +315,7 @@ curl --location --request POST 'http://localhost:3000/' \
 
 Can be used with the `custom-file` example
 
-```
+```bash
 curl --location --request POST 'http://localhost:3000/?id=2&type=camera' \
 --header 'Content-Type: application/json' \
 --data-raw '{
