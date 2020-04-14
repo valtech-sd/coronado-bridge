@@ -150,19 +150,19 @@ This section is a walkthrough of some of the examples found in `./examples`
 
 ## Typescript
 
-If you are implementing this into a typescript project you can use the `IOutboundProvider` interface to help you define the outbound provider .
+If you are implementing this into a typescript project you can use the `IOutboundProvider` interface to help you define the outbound provider (and the `IProviderReq` interface to define the object passed in to the provider).
 
 ```
 // import IOutboundProvider interface to
 // help define the outbound provider class
-import {IOutboundProvider} from 'coronado-bridge'
+import {IOutboundProvider, IProviderReq} from 'coronado-bridge'
 
 // Our outbound provider class implements the
 // IOutboundProvider interface
 class OutboundConsole implements IOutboundProvider {
 
     // The handler method receives a req and returns a Promise
-    handler(req: object): Promise<void> {
+    handler(req: IProviderReq): Promise<void> {
         return new Promise((resolve, reject)=>{
             console.log(req)
             resolve()
@@ -172,6 +172,28 @@ class OutboundConsole implements IOutboundProvider {
 
 export default OutboundConsole
 ```
+
+You can also return `data` from an outbound provider's Promise:
+
+```
+// import IOutboundProvider interface to
+// help define the outbound provider class
+import {IOutboundProvider, IProviderReq} from 'coronado-bridge'
+
+// Our outbound provider class implements the
+// IOutboundProvider interface
+class OutboundConsole implements IOutboundProvider {
+
+    // The handler method receives a req and returns a Promise
+    handler(req: IProviderReq): Promise<any> {
+        return new Promise((resolve, reject)=>{
+            console.log(req)
+            resolve('Logged data to the console.')
+        })
+    }
+}
+```
+
 
 ## Error Handling
 
