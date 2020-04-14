@@ -8,7 +8,7 @@ import BridgeError from './bridge-error';
 interface IProviderReq {
   body: object;
   query: object;
-  params?: object;
+  params?: Array<string>;
 }
 
 class CoronadoBridge {
