@@ -1,15 +1,9 @@
 import express from 'express';
 import { Logger } from 'log4js';
 import { IBridgeConfig } from './index';
-import { IOutboundProvider } from './provider';
+import { IOutboundProvider, IProviderReq } from './provider'; 
 
 import BridgeError from './bridge-error';
-
-interface IProviderReq {
-  body: object;
-  query: object;
-  params?: Array<string>;
-}
 
 class CoronadoBridge {
   private outboundProvider: IOutboundProvider;
