@@ -71,7 +71,7 @@ class CoronadoBridge {
           .handler(providerReq)
           .then(data => {
             if (this.logger) {
-              this.logger.info(`CoronadoBridge - handler processed message`);
+              this.logger.info(`CoronadoBridge - handler processed message`); 
             }
             res.status(200).send(data);
           })
