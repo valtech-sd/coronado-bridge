@@ -1,11 +1,11 @@
-import { IOutboundProvider } from 'coronado-bridge';
+import { IOutboundProvider, IProviderReq } from 'coronado-bridge';
 import OutboundFile, { IOutboundFileConfig } from './OutboundFile';
 
 const outboundFileConfig: IOutboundFileConfig = {
   filePath: './messages.json',
 };
 
-interface IHandlerReq {
+interface IHandlerReq extends IProviderReq {
   query: {
     id: number;
     type: string;

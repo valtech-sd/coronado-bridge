@@ -21,7 +21,7 @@ You might want to use `coronado-bridge` to avoid having to implicitly import Exp
 
 What is a outbound provider? An outbound provider is a class that implements a `handler` function. All incoming messages are routed through this function. This function must return a Promise and should resolve on success and reject on errors.
 
-The `handler` function is passed a req object. The req object has the request body, request queries and request parameters.
+The `handler` function is passed a `req` object. The `req` object has the request method, body, request queries, and request parameters.
 
 **Example Request:**
 
@@ -29,15 +29,18 @@ The `handler` function is passed a req object. The req object has the request bo
 - body: `{id: 1, name: Shane, page: 33}`
 - URL: `/article/55?page=54&loc=USA`
 
-Outbound Provider req Object:
+Outbound Provider `req` Object:
 
 ```js
 {
+  method: 'POST',
   body: {id: 1, name: Shane, page: 33},
-  query: {page:54, loc:'USA'},
+  query: {page: 54, loc: 'USA'},
   params: ['article', '55']
 }
 ```
+
+Coronado Bridge only accepts `GET`, `POST`, `PUT`, and `DELETE`, and ignores all other HTTP methods.
 
 **Example Class:**
 
@@ -238,7 +241,7 @@ The outbound custom file example is an extension of the OutboundFile outbound pr
 
 ```ts
 // Define expected message
-interface IHandlerReq {
+interface IHandlerReq extends IProviderReq {
   query: {
     id: number;
     type: string;

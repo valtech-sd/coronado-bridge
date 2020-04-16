@@ -53,7 +53,19 @@ class CoronadoBridge {
         next();
       });
       // 2. Sets up server route
-      app.post('*', (req, res) => {
+      app.all('*', (req, res) => {
+        // Disregard HTTP requests that are *not* GET, POST, PUT, DELETE
+        if (['GET','POST','PUT','DELETE'].indexOf(req.method)<0) {
+          if (this.logger) {
+            this.logger.info(
+              `CoronadoBridge - request received with method ${req.method} -> will not pass to provider`
+            );
+          }
+          res.status(500).send({
+            message: `Received request with method ${req.method}, but CoronadoBridge only supports GET, POST, PUT, and DELETE.`,
+          });
+          return;
+        }
         if (this.logger) {
           this.logger.info(
             `CoronadoBridge - request received on port:${port} -> passing message to outboundProvider`
@@ -61,7 +73,7 @@ class CoronadoBridge {
         }
         // Merge request body/query into one object for the message and add any passed params.
         // Note: Query properties override body properties (example URL: /?exchange=test&topic=coolfactor1)
-        let providerReq: IProviderReq = { body: req.body, query: req.query };
+        let providerReq: IProviderReq = { method: req.method, body: req.body, query: req.query };
         if (req.params) {
           const paramsArray = req.params['0'].split('/');
           paramsArray.shift(); // The first item is always undefined so lets remove it.
