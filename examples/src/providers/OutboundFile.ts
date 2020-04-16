@@ -1,4 +1,4 @@
-import { IOutboundProvider } from 'coronado-bridge';
+import { IOutboundProvider, IProviderReq } from 'coronado-bridge';
 import fs from 'fs';
 
 export interface IOutboundFileConfig {
@@ -12,7 +12,7 @@ class OutboundFile implements IOutboundProvider {
     this.filePath = config.filePath;
   }
 
-  handler(message: object): Promise<void> {
+  handler(message: IProviderReq): Promise<void> {
     return new Promise((resolve, reject) => {
       let messages: Array<object> = [];
       fs.exists(this.filePath, exists => {

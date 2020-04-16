@@ -6,7 +6,7 @@ import logger from './providers/CustomLogger';
  * This provider comes with a configuration interface,
  * BUT we are not using typescript so we will not import it.
  */
-import OutboundFile from './providers/OutboundFile';
+import OutboundFileJS from './providers/OutboundFileJS';
 
 /*
  * OutboundProvider Config.
@@ -26,7 +26,7 @@ const outboundFileConfig = {
 const config = {
   ports: [3000, 3002],
   logger,
-  outboundProvider: new OutboundFile(outboundFileConfig),
+  outboundProvider: new OutboundFileJS(outboundFileConfig),
 };
 
 new CoronadoBridge(config);

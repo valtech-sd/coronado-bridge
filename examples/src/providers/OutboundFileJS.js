@@ -6,7 +6,7 @@ class OutboundFileJS {
   }
 
   handler(message) {
-    return new Promsie((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let messages = [];
       fs.exists(this.filePath, exists => {
         if (exists) {

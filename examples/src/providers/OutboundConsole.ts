@@ -1,7 +1,7 @@
-import { IOutboundProvider } from 'coronado-bridge';
+import { IOutboundProvider, IProviderReq } from 'coronado-bridge';
 
 export default class OutboundConsole implements IOutboundProvider {
-  handler(req: object): Promise<void> {
+  handler(req: IProviderReq): Promise<void> {
     return new Promise((resolve, reject) => {
       console.log(req);
       resolve();
