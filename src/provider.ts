@@ -1,4 +1,5 @@
 export interface IProviderReq {
+  method: string;
   body: object;
   query: object;
   params?: Array<string>;
