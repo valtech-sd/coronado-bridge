@@ -1,7 +1,8 @@
 import express from 'express';
+import cors from 'cors';
 import { Logger } from 'log4js';
 import { IBridgeConfig } from './index';
-import { IOutboundProvider, IProviderReq } from './provider'; 
+import { IOutboundProvider, IProviderReq } from './provider';
 
 import BridgeError from './bridge-error';
 
@@ -44,26 +45,18 @@ class CoronadoBridge {
     ports.forEach((port: number) => {
       let app = express();
       app.use(express.json());
-      app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header(
-          'Access-Control-Allow-Headers',
-          'Origin, X-Requested-With, Content-Type, Accept'
-        );
-        next();
-      });
+      app.use(cors());
       // 2. Sets up server route
-      app.all('*', (req, res) => {
+      app.all('*', (req, res, next) => {
         // Disregard HTTP requests that are *not* GET, POST, PUT, DELETE
-        if (['GET','POST','PUT','DELETE'].indexOf(req.method)<0) {
+        if (['GET', 'POST', 'PUT', 'DELETE'].indexOf(req.method) < 0) {
           if (this.logger) {
             this.logger.info(
               `CoronadoBridge - request received with method ${req.method} -> will not pass to provider`
             );
           }
-          res.status(500).send({
-            message: `Received request with method ${req.method}, but CoronadoBridge only supports GET, POST, PUT, and DELETE.`,
-          });
+          // OPTION still needs to be handled by cors. So we have to give this to next() which is really the right way to handle this anyway
+          next();
           return;
         }
         if (this.logger) {
@@ -73,7 +66,11 @@ class CoronadoBridge {
         }
         // Merge request body/query into one object for the message and add any passed params.
         // Note: Query properties override body properties (example URL: /?exchange=test&topic=coolfactor1)
-        let providerReq: IProviderReq = { method: req.method, body: req.body, query: req.query };
+        let providerReq: IProviderReq = {
+          method: req.method,
+          body: req.body,
+          query: req.query,
+        };
         if (req.params) {
           const paramsArray = req.params['0'].split('/');
           paramsArray.shift(); // The first item is always undefined so lets remove it.
@@ -81,13 +78,13 @@ class CoronadoBridge {
         }
         this.outboundProvider
           .handler(providerReq)
-          .then(data => {
+          .then((data) => {
             if (this.logger) {
-              this.logger.info(`CoronadoBridge - handler processed message`); 
+              this.logger.info(`CoronadoBridge - handler processed message`);
             }
             res.status(200).send(data);
           })
-          .catch(error => {
+          .catch((error) => {
             if (error instanceof BridgeError) {
               if (this.logger) {
                 this.logger.error(

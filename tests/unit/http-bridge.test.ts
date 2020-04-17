@@ -18,13 +18,17 @@ const providerConfig: ITestConfig = {
 };
 
 class TestProvider implements IOutboundProvider {
+  public messages: any[];
+
   constructor(config: ITestConfig) {
     expect(config.testProp).to.exist;
+    this.messages = [];
   }
 
   handler(message: object): Promise<void> {
     return new Promise((resolve, reject) => {
       expect(message).to.exist;
+      this.messages.push(message);
       resolve();
     });
   }
@@ -43,7 +47,7 @@ class TestErrorProvider implements IOutboundProvider {
   }
 }
 
-describe('HTTP Bridge', function() {
+describe('HTTP Bridge', function () {
   it('Initializes', (done: () => void) => {
     const config = {
       ports: [3000],
@@ -64,7 +68,7 @@ describe('HTTP Bridge', function() {
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
-    testServerPort(3000).then(res => {
+    testServerPort(3000).then((res) => {
       expect(res).to.have.status(200);
       //cleanup
       bridge.close();
@@ -82,7 +86,7 @@ describe('HTTP Bridge', function() {
     };
     const bridge = new CoronadoBridge(config);
     testServerPort(3000)
-      .then(res => {
+      .then((res) => {
         expect(res).to.have.status(200);
         firstSeverCallWasSuccessful = true;
       })
@@ -90,10 +94,10 @@ describe('HTTP Bridge', function() {
         bridge.close();
         return testServerPort(3000);
       })
-      .then(res => {
+      .then((res) => {
         expect(res).to.not.exist;
       })
-      .catch(err => {
+      .catch((err) => {
         expect(firstSeverCallWasSuccessful).to.equal(true);
         expect(err).to.exist;
         done();
@@ -110,9 +114,9 @@ describe('HTTP Bridge', function() {
 
     let testPromises: Array<Promise<any>> = [];
 
-    config.ports.forEach(port => {
+    config.ports.forEach((port) => {
       testPromises.push(
-        testServerPort(port).then(res => {
+        testServerPort(port).then((res) => {
           expect(res).to.have.status(200);
         })
       );
@@ -134,9 +138,9 @@ describe('HTTP Bridge', function() {
 
     let testPromises: Array<Promise<any>> = [];
 
-    config.ports.forEach(port => {
+    config.ports.forEach((port) => {
       testPromises.push(
-        testServerPort(port).then(res => {
+        testServerPort(port).then((res) => {
           expect(res).to.have.status(500);
           expect(res.body.message).to.exist;
         })
@@ -149,13 +153,81 @@ describe('HTTP Bridge', function() {
     });
   });
 
-  function testServerPort(port: number) {
+  it('Correct data in output provider', async () => {
+    const config = {
+      ports: [3000],
+      logger,
+      outboundProvider: new TestProvider(providerConfig),
+    };
+    const bridge = new CoronadoBridge(config);
+    try {
+      let body = { testBodyData: 'test' };
+      let params = ['param1', 'param2', 'param3', 'param4'];
+      let query = { foo: 'bar' };
+      let res = await testServerPort(config.ports[0], {
+        path: `/${params.join('/')}`,
+        body,
+        query,
+      });
+
+      expect(res).to.have.status(200);
+
+      expect((config.outboundProvider.messages || [])[0]).to.deep.equal({
+        body,
+        params,
+        query,
+        method: 'POST',
+      });
+    } finally {
+      bridge.close();
+    }
+  });
+
+  it('Test Cors using option request', async () => {
+    const config = {
+      ports: [3000],
+      logger,
+      outboundProvider: new TestProvider(providerConfig),
+    };
+    const bridge = new CoronadoBridge(config);
+    try {
+      let res = await testServerOptionsPort(config.ports[0]);
+
+      expect(res).to.have.status(204);
+    } finally {
+      bridge.close();
+    }
+  });
+
+  function testServerPort(
+    port: number,
+    { path, body, query }: { path: string; body: any; query?: any } = {
+      path: '/',
+      body: { name: 'Shane' },
+      query: {},
+    }
+  ): Promise<any> {
     return chai
       .request(`http://localhost:${port}`)
-      .post('/')
+      .post(path)
+      .query(query)
       .type('application/json')
-      .send({
-        name: 'Shane',
-      });
+      .send(body);
+  }
+
+  function testServerOptionsPort(
+    port: number,
+    { path, body, query }: { path: string; body: any; query?: any } = {
+      path: '/',
+      body: { name: 'Shane' },
+      query: {},
+    }
+  ): Promise<any> {
+    return chai
+      .request(`http://localhost:${port}`)
+      .options(path)
+      .query(query)
+      .type('application/json')
+      .send(body);
   }
 });
