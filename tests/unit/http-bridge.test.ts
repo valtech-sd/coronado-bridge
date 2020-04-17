@@ -153,7 +153,15 @@ describe('HTTP Bridge', function () {
     });
   });
 
+  /************
+   * Test to make sure output provider recieves good data
+   * 1. Setup coronado bridge.
+   * 2. Make a test call and pass in body, path, and query params
+   * 3. Make sure status is valid
+   * 4. Make sure the output provider recieves the same dta we did an http call with
+   ************/
   it('Correct data in output provider', async () => {
+    // 1. Setup coronado bridge.
     const config = {
       ports: [3000],
       logger,
@@ -164,14 +172,17 @@ describe('HTTP Bridge', function () {
       let body = { testBodyData: 'test' };
       let params = ['param1', 'param2', 'param3', 'param4'];
       let query = { foo: 'bar' };
+      // 2. Make a test call and pass in body, path, and query params
       let res = await testServerPort(config.ports[0], {
         path: `/${params.join('/')}`,
         body,
         query,
       });
 
+      // 3. Make sure status is valid
       expect(res).to.have.status(200);
 
+      // 4. Make sure the output provider recieves the same dta we did an http call with
       expect((config.outboundProvider.messages || [])[0]).to.deep.equal({
         body,
         params,
@@ -183,7 +194,15 @@ describe('HTTP Bridge', function () {
     }
   });
 
+  /************
+   * Test to make sure cors will work
+   * The main way I know to test this is to make sure OPTION is handled
+   * 1. Setup coronado bridge.
+   * 2. Make a test call using http OPTION
+   * 3. Make sure status is valid
+   ************/
   it('Test Cors using option request', async () => {
+    // 1. Setup coronado bridge.
     const config = {
       ports: [3000],
       logger,
@@ -191,8 +210,10 @@ describe('HTTP Bridge', function () {
     };
     const bridge = new CoronadoBridge(config);
     try {
+      // 2. Make a test call using http OPTION
       let res = await testServerOptionsPort(config.ports[0]);
 
+      // 3. Make sure status is valid
       expect(res).to.have.status(204);
     } finally {
       bridge.close();
