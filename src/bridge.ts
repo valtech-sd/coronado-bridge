@@ -78,13 +78,13 @@ class CoronadoBridge {
         }
         this.outboundProvider
           .handler(providerReq)
-          .then((data) => {
+          .then(data => {
             if (this.logger) {
               this.logger.info(`CoronadoBridge - handler processed message`);
             }
             res.status(200).send(data);
           })
-          .catch((error) => {
+          .catch(error => {
             if (error instanceof BridgeError) {
               if (this.logger) {
                 this.logger.error(

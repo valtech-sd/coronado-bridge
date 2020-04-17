@@ -47,7 +47,7 @@ class TestErrorProvider implements IOutboundProvider {
   }
 }
 
-describe('HTTP Bridge', function () {
+describe('HTTP Bridge', function() {
   it('Initializes', (done: () => void) => {
     const config = {
       ports: [3000],
@@ -68,7 +68,7 @@ describe('HTTP Bridge', function () {
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
-    testServerPort(3000).then((res) => {
+    testServerPort(3000).then(res => {
       expect(res).to.have.status(200);
       //cleanup
       bridge.close();
@@ -86,7 +86,7 @@ describe('HTTP Bridge', function () {
     };
     const bridge = new CoronadoBridge(config);
     testServerPort(3000)
-      .then((res) => {
+      .then(res => {
         expect(res).to.have.status(200);
         firstSeverCallWasSuccessful = true;
       })
@@ -94,10 +94,10 @@ describe('HTTP Bridge', function () {
         bridge.close();
         return testServerPort(3000);
       })
-      .then((res) => {
+      .then(res => {
         expect(res).to.not.exist;
       })
-      .catch((err) => {
+      .catch(err => {
         expect(firstSeverCallWasSuccessful).to.equal(true);
         expect(err).to.exist;
         done();
@@ -114,9 +114,9 @@ describe('HTTP Bridge', function () {
 
     let testPromises: Array<Promise<any>> = [];
 
-    config.ports.forEach((port) => {
+    config.ports.forEach(port => {
       testPromises.push(
-        testServerPort(port).then((res) => {
+        testServerPort(port).then(res => {
           expect(res).to.have.status(200);
         })
       );
@@ -138,9 +138,9 @@ describe('HTTP Bridge', function () {
 
     let testPromises: Array<Promise<any>> = [];
 
-    config.ports.forEach((port) => {
+    config.ports.forEach(port => {
       testPromises.push(
-        testServerPort(port).then((res) => {
+        testServerPort(port).then(res => {
           expect(res).to.have.status(500);
           expect(res.body.message).to.exist;
         })
