@@ -71,9 +71,25 @@ class CoronadoBridge {
           body: req.body,
           query: req.query,
         };
+        // TODO: Test to make sure we don't need this [0] split dance!
         if (req.params) {
+          // The req.params is an object from Express and TypeScript checking
+          // does not like it, so we'll ignore it here.
+          // This is basically parsing out what comes in like this:
+          //   "params": {
+          //     "0": "/param1/param2/param3/param4"
+          //   }
+          // Into:
+          //   "params": [
+          //     "param1",
+          //     "param2",
+          //     "param3",
+          //     "param4"
+          //   ]
+          // @ts-ignore
           const paramsArray = req.params['0'].split('/');
           paramsArray.shift(); // The first item is always undefined so lets remove it.
+          // Now set it to our object
           providerReq.params = paramsArray;
         }
         this.outboundProvider

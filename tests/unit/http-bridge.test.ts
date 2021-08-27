@@ -1,11 +1,12 @@
 import 'mocha';
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+
 import CoronadoBridge, {
   IOutboundProvider,
   BridgeError,
 } from '../../src/index';
-import logger from '../../examples/src/providers/CustomLogger';
+import logger from '../helpers/Logger';
 
 chai.use(chaiHttp);
 
