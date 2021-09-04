@@ -3,6 +3,13 @@ export interface IProviderReq {
   body: object;
   query: object;
   params?: Array<string>;
+  headers: object;
+}
+
+export interface IProviderRes {
+  body: object,
+  status: number,
+  headers?: object
 }
 
 export interface IOutboundProvider {
