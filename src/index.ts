@@ -21,7 +21,9 @@ export interface IBridgeConfig {
   // Defaults to 30s
   requestTimeoutMs?: number;
   // Refer to https://github.com/expressjs/cors#configuration-options for
-  // valid corsOptions. This uses the expressjs cors library.
+  // valid corsOptions. This uses the expressjs cors library. If not specified,
+  // CORS will output with the most permissive headers possible
+  // Access-Control-Allow-Origin: *
   corsOptions?: object;
 }
 

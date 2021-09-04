@@ -65,7 +65,7 @@ class CoronadoBridge {
         // Takes all paths
         '*',
         // Times out per the Coronado Config or defaults to 30s
-        timeout(this.requestTimeoutMs?.toString() || '30000'),
+        timeout(this.requestTimeoutMs?.toString() || '30s'),
         // Defines our handler
         (req, res, next) => {
           // Disregard HTTP requests that are *not* GET, POST, PUT, DELETE

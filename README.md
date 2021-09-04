@@ -9,12 +9,6 @@
 
 ## Purpose
 
-// TODO: Explain how BRIDGE can respond to a request, including the "any object" convenience (at 
-//  the expense of not controlling HTTP status code) as well as <OutboundResponse> which does allow for 
-//  a controlled response.
-
-// TODO: Long hard pass at this README!
-
 Coronado Bridge is a simple general purpose router of HTTP requests. It does this by starting up an Express server
 with a default route that accepts all requests. Then, when requests come in, they are parsed out and wrapped into a 
 JSON object, then passes this JSON object into an outbound provider (a class with logic of your choice that performs
@@ -100,7 +94,7 @@ with. The bridge will automatically respond with http status = 200 and either an
 from the handler. However, in most cases you want to control more than this. For example, you may want to set the 
 response code, and control the headers that are sent back to the response.
 
-For this, you can return the special object OutboundResponse. That object has the following structure:
+For this, you can return the special object confirming to **OutboundResponse**. That object has the following structure:
 - body: an object to be returned in the body of the response.
 - status: a number to be set as the HTTP status for the response.
 - headers?: an object of key-value pairs to be sent in the HTTP response as headers.
@@ -193,11 +187,13 @@ application. The constructor requires a configuration object which is outlined b
 
 The package has some configuration options.
 
-| Option           | Type            | Description                                                                  | Required | Default |
-| ---------------- | --------------- | ---------------------------------------------------------------------------- | -------- | ------- |
-| outboundProvider | `Class`         | This class is passed all requests and should confirm to **IOutboundProvider** and implement a `handler` method. | YES      | N/A     |
-| ports            | `Array<Number>` | The ports Express listens to for inbound messages.                           | NO       | 3000    |
-| logger           | `log4js`        | An instance of a log4js logger.                                               | NO       | N/A     |
+| Option           | Type                                          | Description                                                                                                                                                                                                     | Required | Default                                                                           |
+|------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------------------------------------------------------------------------------|
+| outboundProvider | A class that conforms to `IOutboundProvider`. | This class is passed all requests and should implement a `handler` method that determines what to do with the request. It is here that you insert your logic, call other systems, etc.                          | YES      | N/A                                                                               |
+| ports            | `Array<number>`                               | An array with one or more port numbers that the HTTP Server will listen for requests on.                                                                                                                        | NO       | 3000                                                                              |
+| logger           | `log4js`                                      | An instance of a log4js logger.                                                                                                                                                                                 | NO       | N/A                                                                               |
+| requestTimeoutMs | `Number`                                      | A duration (number in milliseconds) that determines how long an Outbound Provider for an HTTP request is allowed to execute before the HTTP client is sent a timeout response.                                  | NO       | 30s                                                                               |
+| corsOptions      | `object`                                      | Allows the bridge instance to control CORS headers. The option should be an object conforming to the structure documented in Express' CORS module. See https://github.com/expressjs/cors#configuration-options. | NO       | CORS headers will be set to the most permissive `Access-Control-Allow-Origin: *`. |
 
 **Example**:
 
@@ -226,9 +222,21 @@ class OutboundFileJS {
 }
 
 const config = {
+  // Listens on one or more ports, ports 3000 + 3002 in this case
   ports: [3000, 3002],
+  // Passes a reference to a log4js Logger
   logger,
+  // Wires in an outbound provider
   outboundProvider: new OutboundFileJS(),
+  // 5 second timeout
+  requestTimeoutMs: 5000,
+  // control CORS
+  corsOptions: {
+    // Restricts requests from a specific origin only
+    origin: 'https://yourapp.somedomain.com/',
+    // Allows GET and POST only
+    methods: ['GET','POST'], 
+  }
 };
 
 new CoronadoBridge(config);
@@ -245,9 +253,21 @@ import CoronadoBridge, { IBridgeConfig } from 'coronado-bridge';
 // Define the CoronadoBridge configuration with the help of
 // the IBridgeConfig interface.
 const config: IBridgeConfig = {
-    ports: [3000,3002],
-    outboundProvider: new OutboundFile(),
-    logger,
+  // Listens on one or more ports, ports 3000 + 3002 in this case
+  ports: [3000, 3002],
+  // Passes a reference to a log4js Logger
+  logger,
+  // Wires in an outbound provider
+  outboundProvider: new OutboundFileJS(),
+  // 5 second timeout
+  requestTimeoutMs: 5000,
+  // control CORS
+  corsOptions: {
+    // Restricts requests from a specific origin only
+    origin: 'https://yourapp.somedomain.com/',
+    // Allows GET and POST only
+    methods: ['GET','POST'],
+  }
 }
 
 new CoronadoBridge(config);
@@ -255,7 +275,8 @@ new CoronadoBridge(config);
 
 # Outbound Provider Examples
 
-This section is a walkthrough of some of the examples found in `./examples`
+This section is a walkthrough of some of the examples found in `./examples`. Please see the examples themselves for more
+details.
 
 ## Typescript
 
