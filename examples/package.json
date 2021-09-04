@@ -10,9 +10,10 @@
     "build:package": "cd .. && npx tsc",
     "build:examples": "tsc",
     "file": "node build/file.js",
-    "file-js": "node build/file-no-typescript.js",
+    "file-js": "node src/file-javascript-only.js",
     "custom-file": "node build/custom-file.js",
     "console": "node build/console.js",
+    "console-alternate": "node build/console-alternate.js",
     "error": "node build/error.js"
   },
   "author": "",

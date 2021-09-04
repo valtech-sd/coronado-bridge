@@ -1,5 +1,6 @@
 import CoronadoBridge, { IBridgeConfig } from 'coronado-bridge';
 import logger from './providers/CustomLogger';
+
 /*
  * Import the outbound provider we want to use:
  * In this case we are using the OutboundConsole provider.
@@ -15,7 +16,7 @@ import OutboundConsole from './providers/OutboundConsole';
 const config: IBridgeConfig = {
   ports: [3000, 3002],
   logger,
-  outboundProvider: new OutboundConsole(),
+  outboundProvider: new OutboundConsole(logger),
 };
 
 new CoronadoBridge(config);

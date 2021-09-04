@@ -25,7 +25,7 @@ const outboundFileConfig: IOutboundFileConfig = {
 const config: IBridgeConfig = {
   ports: [3000, 3002],
   logger,
-  outboundProvider: new OutboundFile(outboundFileConfig),
+  outboundProvider: new OutboundFile(outboundFileConfig, logger),
 };
 
 new CoronadoBridge(config);

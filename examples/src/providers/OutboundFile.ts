@@ -1,5 +1,6 @@
 import { IOutboundProvider, IProviderReq } from 'coronado-bridge';
 import fs from 'fs';
+import { Logger } from 'log4js';
 
 export interface IOutboundFileConfig {
   filePath: string;
@@ -7,28 +8,25 @@ export interface IOutboundFileConfig {
 
 class OutboundFile implements IOutboundProvider {
   private filePath: string;
+  private logger: Logger;
 
-  constructor(config: IOutboundFileConfig) {
+  constructor(config: IOutboundFileConfig, logger: Logger) {
     this.filePath = config.filePath;
+    this.logger = logger;
   }
 
-  handler(message: IProviderReq): Promise<void> {
+  handler(request: IProviderReq): Promise<void> {
     return new Promise((resolve, reject) => {
-      let messages: Array<object> = [];
-      fs.exists(this.filePath, exists => {
-        if (exists) {
-          const data = fs.readFileSync(this.filePath, 'utf-8');
-          if (data) {
-            messages = JSON.parse(data);
-          }
-        }
-        messages.push(message);
-        fs.writeFile(this.filePath, JSON.stringify(messages), 'utf-8', err => {
+      fs.appendFile(
+        this.filePath,
+        JSON.stringify(request) + '\n',
+        'utf-8',
+        (err) => {
           if (err) throw err;
-          console.log('Message written to file!');
+          this.logger.info('Message written to file!');
           resolve();
-        });
-      });
+        }
+      );
     });
   }
 }
