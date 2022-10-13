@@ -18,26 +18,27 @@
   "author": "Shane Mckenna",
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
     "connect-timeout": "^1.9.0",
-    "log4js": "^6.1.0"
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
+    "@types/connect-timeout": "^0.0.35",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-serve-static-core": "^4.17.24",
-    "@types/connect-timeout": "^0.0.35",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.4",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
+    "log4js": "^6.7.0",
     "mocha": "^9.1.0",
+    "prettier": "^2.3.2",
     "semantic-release": "^17.4.7",
     "ts-node": "^10.2.1",
-    "typescript": "^4.3.5",
-    "prettier": "^2.3.2"
+    "tslog": "^3.3.4",
+    "typescript": "^4.3.5"
   },
   "publishConfig": {
     "access": "public"
