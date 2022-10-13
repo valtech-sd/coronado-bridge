@@ -9,7 +9,8 @@ import CoronadoBridge, {
   IProviderReq,
   IBridgeConfig,
 } from '../../src/index';
-import logger from '../helpers/Logger';
+import log4jsLogger from '../helpers/Log4js-Logger';
+import tsLogger from '../helpers/ts-Logger';
 
 chai.use(chaiHttp);
 
@@ -38,10 +39,23 @@ const TEST_PORT_4 = 3003;
  */
 
 describe('HTTP Bridge', function () {
-  it('Initializes', (done: () => void) => {
+  it('Initializes with log4js', (done: () => void) => {
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
+      outboundProvider: new TestProvider(providerConfig),
+    };
+    const bridge = new CoronadoBridge(config);
+    expect(bridge).to.not.be.undefined;
+    //cleanup
+    bridge.close();
+    done();
+  });
+
+  it('Initializes tslog', (done: () => void) => {
+    const config = {
+      ports: [TEST_PORT_1],
+      tsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -66,7 +80,7 @@ describe('HTTP Bridge', function () {
   it('Creates server on port 3000', (done: () => void) => {
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -83,7 +97,7 @@ describe('HTTP Bridge', function () {
 
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -109,7 +123,7 @@ describe('HTTP Bridge', function () {
   it('Creates multiple servers', (done: () => void) => {
     const config = {
       ports: [TEST_PORT_1, TEST_PORT_2, TEST_PORT_3, TEST_PORT_4],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -133,7 +147,7 @@ describe('HTTP Bridge', function () {
   it('Handles Errors', (done: () => void) => {
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestErrorProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -158,7 +172,7 @@ describe('HTTP Bridge', function () {
   it('Properly handles timeout', async () => {
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestErrorTimeoutProvider(),
       requestTimeoutMs: 100, // Requests will timeout quickly
     };
@@ -185,7 +199,7 @@ describe('HTTP Bridge', function () {
     // 1. Setup coronado bridge.
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -242,7 +256,7 @@ describe('HTTP Bridge', function () {
     // 1. Setup coronado bridge.
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -300,7 +314,7 @@ describe('HTTP Bridge', function () {
     // 1. Setup coronado bridge.
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProviderWithStructuredResponse(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -354,7 +368,7 @@ describe('HTTP Bridge', function () {
     // 1. Setup coronado bridge.
     const config = {
       ports: [TEST_PORT_1],
-      logger,
+      log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
     };
     const bridge = new CoronadoBridge(config);
@@ -387,7 +401,7 @@ describe('HTTP Bridge', function () {
     // 1. Setup coronado bridge.
     const config: IBridgeConfig = {
       ports: [TEST_PORT_1],
-      logger: logger,
+      logger: log4jsLogger,
       outboundProvider: new TestProvider(providerConfig),
       // In this test we include some corsOptions that we expect
       // the Coronado to pass to the underlying express cors handler.
