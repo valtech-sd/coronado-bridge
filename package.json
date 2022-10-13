@@ -1,6 +1,6 @@
 {
   "name": "coronado-bridge",
-  "version": "1.0.1",
+  "version": "2.1.0",
   "description": "Coronado Bridge is a simple general purpose router of all HTTP requests. It will wrap all RESTful calls from external systems and pass those JSON message into a outbound provider.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
