@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import timeout from 'connect-timeout';
 import cors from 'cors';
-import { Logger } from 'log4js';
+import { ILogger } from './types';
 import { IBridgeConfig } from './index';
 import { IOutboundProvider, IProviderReq } from './provider';
 import util from 'util';
@@ -12,7 +12,7 @@ import OutboundResponse from './outbound-response';
 class CoronadoBridge {
   private outboundProvider: IOutboundProvider;
   private config: IBridgeConfig;
-  private logger?: Logger;
+  private logger?: ILogger;
   private servers: Array<any>;
   private corsOptions?: object;
   private requestTimeoutMs?: number;

@@ -10,28 +10,28 @@
 ## Purpose
 
 Coronado Bridge is a simple general purpose router of HTTP requests. It does this by starting up an Express server
-with a default route that accepts all requests. Then, when requests come in, they are parsed out and wrapped into a 
+with a default route that accepts all requests. Then, when requests come in, they are parsed out and wrapped into a
 JSON object, then passes this JSON object into an outbound provider (a class with logic of your choice that performs
-additional processing.) The outbound provider can also respond to the request, and this response is delivered back to 
+additional processing.) The outbound provider can also respond to the request, and this response is delivered back to
 Express for response back to the http client.
 
 ### Why?
 
-You might want to use `coronado-bridge` to avoid having to implicitly import Express and write all the Express 
-boilerplate code and Express middleware to achieve similar functionality. With just a few lines of code, you can 
+You might want to use `coronado-bridge` to avoid having to implicitly import Express and write all the Express
+boilerplate code and Express middleware to achieve similar functionality. With just a few lines of code, you can
 accomplish what might require a good amount of Express boilerplate.
 
-**Note:** If you already use Express in your application, and are very familiar with Express, this bridge might not be 
+**Note:** If you already use Express in your application, and are very familiar with Express, this bridge might not be
 all that helpful to you. :]
 
 ## Outbound Provider
 
-What is a outbound provider? An outbound provider is a class that implements a **IOutboundProvider** and provides a 
-`handler()` method. All incoming http requests are passed into this function for handling. This function must return a 
+What is a outbound provider? An outbound provider is a class that implements a **IOutboundProvider** and provides a
+`handler()` method. All incoming http requests are passed into this function for handling. This function must return a
 Promise and should resolve on success and reject on errors. The promise returned is used to respond to the original
 http request.
 
-The `handler()` method is passed a `req` object (of type **IProviderReq**). The `req` object has the request method, 
+The `handler()` method is passed a `req` object (of type **IProviderReq**). The `req` object has the request method,
 body, query string, request parameters (the path of the URL requested), and request headers.
 
 **Example Request:**
@@ -39,7 +39,7 @@ body, query string, request parameters (the path of the URL requested), and requ
 - POST
 - body: `{id: 1, name: Shane, page: 33}`
 - URL: `/article/55?page=54&loc=USA`
-- headers: `content-type: application/json` 
+- headers: `content-type: application/json`
 
 Outbound Provider `req` Object:
 
@@ -62,39 +62,41 @@ is passed onto a CORS handler but not much else, in order to handle pre-flight o
 
 ```javascript
 class OutboundConsole {
-    handler(req) {
-        // Returns a promise
-        return new Promise((resolve, reject)=> {
-            // Process the incoming req
-            console.log(req)
-            // Resolve with a response object to pass that back to the 
-            // http request. You can also return a string instead!
-            resolve({someitem: 'somevalue'})
-        })
-    }
+  handler(req) {
+    // Returns a promise
+    return new Promise((resolve, reject) => {
+      // Process the incoming req
+      console.log(req);
+      // Resolve with a response object to pass that back to the
+      // http request. You can also return a string instead!
+      resolve({ someitem: 'somevalue' });
+    });
+  }
 }
 ```
 
 The above class will return the following to every request (and http status = 200):
+
 ```json
 {
   "some-item": "some-value"
 }
 ```
 
-The above example is quite basic. You could implement a `handler()` that processes the request and then communicates 
+The above example is quite basic. You could implement a `handler()` that processes the request and then communicates
 with an external API or system e.g. Message Queue, SMS, HTTP, SOAP etc.
 
 _More examples can be found in `./examples` folder. Some are explained in more detail below._
 
 ### Responding to Requests
 
-Coronado Bridge automatically responds to the HTTP request with whatever the `handler()` method resolves (or rejects) 
+Coronado Bridge automatically responds to the HTTP request with whatever the `handler()` method resolves (or rejects)
 with. The bridge will automatically respond with http status = 200 and either an object or a primitive you return
-from the handler. However, in most cases you want to control more than this. For example, you may want to set the 
+from the handler. However, in most cases you want to control more than this. For example, you may want to set the
 response code, and control the headers that are sent back to the response.
 
 For this, you can return the special object confirming to **OutboundResponse**. That object has the following structure:
+
 - body: an object to be returned in the body of the response.
 - status: a number to be set as the HTTP status for the response.
 - headers?: an object of key-value pairs to be sent in the HTTP response as headers.
@@ -154,7 +156,7 @@ module.exports = OutboundFileJS;
 
 This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/). Review the file .nvmrc for the 
+Before installing, [download and install Node.js](https://nodejs.org/en/download/). Review the file .nvmrc for the
 recommended version of NodeJS to use.
 
 Installation is done using the
@@ -177,10 +179,14 @@ import {
 } from 'coronado-bridge';
 
 // require
-const { default: CoronadoBridge, OutboundResponse, BridgeError } = require('coronado-bridge');
+const {
+  default: CoronadoBridge,
+  OutboundResponse,
+  BridgeError,
+} = require('coronado-bridge');
 ```
 
-The default export of the package is the CoronadoBridge object. When you initialize this, it bootstraps and starts the 
+The default export of the package is the CoronadoBridge object. When you initialize this, it bootstraps and starts the
 application. The constructor requires a configuration object which is outlined below.
 
 ## Coronado Bridge Configuration
@@ -188,17 +194,20 @@ application. The constructor requires a configuration object which is outlined b
 The package has some configuration options.
 
 | Option           | Type                                          | Description                                                                                                                                                                                                     | Required | Default                                                                           |
-|------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------------------------------------------------------------------------------|
+| ---------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
 | outboundProvider | A class that conforms to `IOutboundProvider`. | This class is passed all requests and should implement a `handler` method that determines what to do with the request. It is here that you insert your logic, call other systems, etc.                          | YES      | N/A                                                                               |
 | ports            | `Array<number>`                               | An array with one or more port numbers that the HTTP Server will listen for requests on.                                                                                                                        | NO       | 3000                                                                              |
-| logger           | `log4js`                                      | An instance of a log4js logger.                                                                                                                                                                                 | NO       | N/A                                                                               |
+| logger           | `ILogger`                                     | An logger instance.                                                                                                                                                                                             | NO       | N/A                                                                               |
 | requestTimeoutMs | `Number`                                      | A duration (number in milliseconds) that determines how long an Outbound Provider for an HTTP request is allowed to execute before the HTTP client is sent a timeout response.                                  | NO       | 30s                                                                               |
 | corsOptions      | `object`                                      | Allows the bridge instance to control CORS headers. The option should be an object conforming to the structure documented in Express' CORS module. See https://github.com/expressjs/cors#configuration-options. | NO       | CORS headers will be set to the most permissive `Access-Control-Allow-Origin: *`. |
 
 **Example**:
 
 ```js
-const { default: CoronadoBridge, OutboundResponse } = require('coronado-bridge');
+const {
+  default: CoronadoBridge,
+  OutboundResponse,
+} = require('coronado-bridge');
 
 // Setup a logger
 const log4js = require('log4js');
@@ -235,8 +244,8 @@ const config = {
     // Restricts requests from a specific origin only
     origin: 'https://yourapp.somedomain.com/',
     // Allows GET and POST only
-    methods: ['GET','POST'], 
-  }
+    methods: ['GET', 'POST'],
+  },
 };
 
 new CoronadoBridge(config);
@@ -244,7 +253,7 @@ new CoronadoBridge(config);
 
 ## Typescript
 
-This package is built in typescript. If you are implementing this into a typescript project you can use the `ICoronadoBridgeConfig` 
+This package is built in typescript. If you are implementing this into a typescript project you can use the `ICoronadoBridgeConfig`
 interface to help you define the configuration object.
 
 ```ts
@@ -266,9 +275,9 @@ const config: IBridgeConfig = {
     // Restricts requests from a specific origin only
     origin: 'https://yourapp.somedomain.com/',
     // Allows GET and POST only
-    methods: ['GET','POST'],
-  }
-}
+    methods: ['GET', 'POST'],
+  },
+};
 
 new CoronadoBridge(config);
 ```
@@ -280,7 +289,7 @@ details.
 
 ## Typescript
 
-If you are implementing this into a typescript project you can use the `IOutboundProvider` interface to help you define 
+If you are implementing this into a typescript project you can use the `IOutboundProvider` interface to help you define
 the outbound provider (and the `IProviderReq` interface to define the object passed in to the provider).
 
 ```ts
@@ -295,22 +304,21 @@ import {
 // Our outbound provider class implements the
 // IOutboundProvider interface
 class OutboundConsole implements IOutboundProvider {
-
-    // The handler method receives a req and returns a Promise
-    handler(req: IProviderReq): Promise<void> {
-        return new Promise((resolve, reject)=>{
-          // Create a structured response object so we can control HTTP response code and more...
-          const structuredResponse = new OutboundResponse(
-            { response: 'OK!', yourRequest: req },
-            201
-          );
-          // Resolve with the object.
-          resolve(structuredResponse);
-        })
-    }
+  // The handler method receives a req and returns a Promise
+  handler(req: IProviderReq): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Create a structured response object so we can control HTTP response code and more...
+      const structuredResponse = new OutboundResponse(
+        { response: 'OK!', yourRequest: req },
+        201
+      );
+      // Resolve with the object.
+      resolve(structuredResponse);
+    });
+  }
 }
 
-export default OutboundConsole
+export default OutboundConsole;
 ```
 
 You can also return an object or other primitive from an outbound provider's Promise:
@@ -318,42 +326,38 @@ You can also return an object or other primitive from an outbound provider's Pro
 ```ts
 // import IOutboundProvider interface to
 // help define the outbound provider class
-import {
-  IOutboundProvider,
-  IProviderReq,
-} from 'coronado-bridge';
+import { IOutboundProvider, IProviderReq } from 'coronado-bridge';
 
 // Our outbound provider class implements the
 // IOutboundProvider interface
 class OutboundConsole implements IOutboundProvider {
-
-    // The handler method receives a req and returns a Promise
-    handler(req: IProviderReq): Promise<any> {
-        return new Promise((resolve, reject)=>{
-            console.log(req)
-            resolve('Some useful return here. Could also be an object instead of a string!')
-        })
-    }
+  // The handler method receives a req and returns a Promise
+  handler(req: IProviderReq): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log(req);
+      resolve(
+        'Some useful return here. Could also be an object instead of a string!'
+      );
+    });
+  }
 }
 ```
 
 ## Error Handling
 
-This package exports a BridgeError class to handle errors in your outbound provider. The `constructor` requires two 
+This package exports a BridgeError class to handle errors in your outbound provider. The `constructor` requires two
 properties: an http status code, and an error message. It can also accept an error name!
 
 ```ts
 // Import the CoronadoBridgeError class
-import { IOutboundProvider,  BridgeError } from 'coronado-bridge';
+import { IOutboundProvider, BridgeError } from 'coronado-bridge';
 
 export default class OutboundError implements IOutboundProvider {
   handler(req: object): Promise<void> {
     return new Promise((resolve, reject) => {
-
       const error = true;
       // Oh no! We have a error
       if (error) {
-
         // Create a new instance of CoronadoBridgeError
         const bridgeError = new BridgeError(
           500, // status code
@@ -367,12 +371,11 @@ export default class OutboundError implements IOutboundProvider {
     });
   }
 }
-
 ```
 
 ## Running The Examples
 
-To run the examples located in `./examples`, simple run the scripts outlined below. This section will also give you 
+To run the examples located in `./examples`, simple run the scripts outlined below. This section will also give you
 some quick curls to test them.
 
 **Note:** Be sure to run `npm run bootstrap` before running any examples
@@ -385,7 +388,7 @@ some quick curls to test them.
 - `build:examples`: Builds the examples.
 - `file`: Runs the file example (Typescript).
 - `console`: Runs the console example (Typescript).
-- `console-alternate`: Runs an alternate console example that demonstrates returning structed output back to the HTTP 
+- `console-alternate`: Runs an alternate console example that demonstrates returning structed output back to the HTTP
   request. (Typescript).
 - `error`: Runs the error example (Typescript).
 - `file-javascript-only`: Runs a javascript version of the file example.

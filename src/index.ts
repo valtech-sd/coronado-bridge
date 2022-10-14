@@ -1,5 +1,5 @@
 import CoronadoBridge from './bridge';
-import { Logger } from 'log4js';
+import { ILogger } from './types';
 
 import { IOutboundProvider, IProviderReq } from './provider';
 
@@ -15,7 +15,7 @@ export interface IBridgeConfig {
   outboundProvider: IOutboundProvider;
   // (Optional) A valid log4js logger to use for all output.
   // Defaults to no logging.
-  logger?: Logger;
+  logger?: ILogger;
   // (Optional) A number representing the timeout duration of any one
   // express request, in milliseconds.
   // Defaults to 30s
