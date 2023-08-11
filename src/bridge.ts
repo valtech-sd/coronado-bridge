@@ -56,7 +56,7 @@ class CoronadoBridge {
       // TODO: Some of the middleware choices might require passing additional
       //  options. These could be exposed in IBridgeConfig if needed. For now,
       //  these are all set to defaults per the docs.
-      app.use(express.json()); // content-type: application/json
+      app.use(express.json(this.config.jsonParsingOptions)); // content-type: application/json
       app.use(express.text()); // content-type: text/plain
       // Notice we support the IBridgeConfig passing in cors options
       app.use(cors(this.corsOptions));

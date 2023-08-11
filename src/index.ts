@@ -1,5 +1,6 @@
 import CoronadoBridge from './bridge';
 import { ILogger } from './types';
+import * as http from 'http';
 
 import { IOutboundProvider, IProviderReq } from './provider';
 
@@ -25,6 +26,22 @@ export interface IBridgeConfig {
   // CORS will output with the most permissive headers possible
   // Access-Control-Allow-Origin: *
   corsOptions?: object;
+  // Express Json Parsing Options
+  jsonParsingOptions?: {
+    /** When set to true, then deflated (compressed) bodies will be inflated; when false, deflated bodies are rejected. Defaults to true. */
+    inflate?: boolean;
+    /**
+     * Controls the maximum request body size. If this is a number,
+     * then the value specifies the number of bytes; if it is a string,
+     * the value is passed to the bytes library for parsing. Defaults to '100kb'.
+     */
+    limit?: number | string;
+    /**
+     * The type option is used to determine what media type the middleware will parse
+     * Default: application/json
+     */
+    type?: string | string[] | ((req: http.IncomingMessage) => any);
+  };
 }
 
 export default CoronadoBridge;

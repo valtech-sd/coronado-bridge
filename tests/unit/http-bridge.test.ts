@@ -1,6 +1,7 @@
 import 'mocha';
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import express from 'express';
 
 import CoronadoBridge, {
   IOutboundProvider,
@@ -11,6 +12,7 @@ import CoronadoBridge, {
 } from '../../src/index';
 import log4jsLogger from '../helpers/Log4js-Logger';
 import tsLogger from '../helpers/ts-Logger';
+import Simple from 'simple-mock';
 
 chai.use(chaiHttp);
 
@@ -39,6 +41,9 @@ const TEST_PORT_4 = 3003;
  */
 
 describe('HTTP Bridge', function () {
+  afterEach(() => {
+    Simple.restore();
+  });
   it('Initializes with log4js', (done: () => void) => {
     const config = {
       ports: [TEST_PORT_1],
@@ -47,6 +52,22 @@ describe('HTTP Bridge', function () {
     };
     const bridge = new CoronadoBridge(config);
     expect(bridge).to.not.be.undefined;
+    //cleanup
+    bridge.close();
+    done();
+  });
+  
+  it('Passes json parsing options to express.json', (done: () => void) => {
+    const jsonParsingOptions = { limit: 1000 };
+    const config = {
+      ports: [TEST_PORT_1],
+      log4jsLogger,
+      outboundProvider: new TestProvider(providerConfig),
+      jsonParsingOptions
+    };
+    const spy = Simple.mock(express, 'json');
+    const bridge = new CoronadoBridge(config);
+    expect(spy.lastCall?.args?.[0]).to.equal(jsonParsingOptions);
     //cleanup
     bridge.close();
     done();
